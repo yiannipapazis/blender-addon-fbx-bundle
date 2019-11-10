@@ -18,7 +18,7 @@ def is_object_valid(obj):
 	if obj.hide_viewport:
 		return False
 		
-	return obj.type == 'MESH' or obj.type == 'FONT' or obj.type == 'CURVE'
+	return obj.type == 'MESH' or obj.type == 'FONT' or obj.type == 'CURVE' or obj.type == 'EMPTY'
 
 
 def get_objects():

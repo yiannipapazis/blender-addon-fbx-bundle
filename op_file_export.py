@@ -115,8 +115,9 @@ def export(self, target_platform):
                 copies.append(bpy.context.object)
 
                 bpy.context.object.location -= pivot
+            # TODO: log error or something
             except RuntimeError:
-                print("Error with")
+                pass
 
         bpy.ops.object.select_all(action="DESELECT")
         for obj in copies:
