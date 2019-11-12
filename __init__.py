@@ -156,7 +156,8 @@ class FBXBundleSettings(bpy.types.PropertyGroup):
 			('UNITY', 'Unity ', 'Unity engine export, fixes axis rotation issues'),
 			('UNREAL', 'Unreal ', 'Unreal engine export'),
 			('BLENDER', 'Collada', 'Default Blender *.DAE export'),
-			('GLTF', 'glTF', 'GL Transmission Format')
+			('GLTF', 'glTF', 'GL Transmission Format'),
+			('OBJ', 'OBJ', 'OBJ')
 		], 
 		description="Target platform for the FBX exports.",
 		name = "Target Platform", 
@@ -500,7 +501,8 @@ class op_remove(bpy.types.Operator):
 def icon_get(name):
 	if name not in preview_icons:
 		print("Icon '{}' not found ".format(name))
-	return preview_icons[name].icon_id
+	# TODO fix broken icons. Don't understand why it can't find OBJ?
+	return preview_icons["unreal"].icon_id
 
 
 preview_icons = None
@@ -546,6 +548,7 @@ def register():
 		"unreal.png", 
 		"blender.png",
 		"gltf.png"
+		"obj.png"
 	]
 	for icon in icons:
 		icon_register(icon)
