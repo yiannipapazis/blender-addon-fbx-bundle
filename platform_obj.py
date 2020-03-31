@@ -27,5 +27,10 @@ class Platform(platform.Platform):
 			use_smooth_groups=True,
 			use_triangles=True,
 			use_uvs=True,
-			use_materials=True
+			use_materials=True,
+			global_scale=100,
+			axis_forward = 'Y',
+			axis_up = 'Z'
+
+
 		)
