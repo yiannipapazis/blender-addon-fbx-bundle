@@ -366,7 +366,7 @@ def get_key(obj):
 		# TODO Make this work
 		# Use group name
 		if len(obj.users_group) >= 1:
-			return obj.users_group[0].name
+			return obj.users_collection[0].name
 	
 	elif mode_bundle == 'COLLECTION_INSTANCE':
 		# Use collection instance name
