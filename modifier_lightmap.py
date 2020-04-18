@@ -11,9 +11,16 @@ from . import modifier
 imp.reload(modifier) 
 
 class Settings(modifier.Settings):
-    	active = bpy.props.BoolProperty (
+	active = bpy.props.BoolProperty (
 		name="Active",
 		default=False
+	)
+	lightmap_pack_type = bpy.props.EnumProperty(
+		name = "Pack Type",
+		items = (
+			("lightmap_pack", "Lightmap Pack", "Uses Blender's Lightmap Pack Operator", 1),
+			("layout_pack", "Layout", "Uses existing UVs to create Lightmap", 2)
+		)
 	)
 
 class Modifier(modifier.Modifier):
@@ -22,32 +29,61 @@ class Modifier(modifier.Modifier):
 	url = ""
 	
 	def __init__(self):
-		super().__init__()	
+		super().__init__()
+	
+	def draw(self, layout):
+		super().draw(layout)
+		if(self.get("active")):
+				row = layout.row(align=True)
+				row.separator()
+				row.separator()
+
+
+				row.prop(eval ("bpy.context.scene." + self.settings_path()), "lightmap_pack_type")
+
+    		
 			
 	def process_objects(self, name, objects):
-		bpy.ops.object.gpro_converttogeo(maxDept=0)
-		selected_objects = bpy.context.selected_objects
-		bpy.context.view_layer.objects.active = selected_objects[0]
+		# Catch any collection instances and convert them to real objects
+		for obj in objects:
+			if obj.type == 'EMPTY' and obj.instance_collection:
+				bpy.ops.object.duplicates_make_real()
+				# Append newly converted objects
+				objects.extend(bpy.context.selected_objects)
+
+		# Find a mesh object so we can run convert operator
+		for obj in objects:
+			if obj.type == 'MESH':
+				bpy.context.view_layer.objects.active = obj
+				break
+			continue
+
 		bpy.ops.object.make_single_user(type='SELECTED_OBJECTS', object=True, obdata=True)
+
+		# TODO Fix scenario where there's already a lightmap or another UV set
+		
 		bpy.ops.object.convert(target='MESH', keep_original=False)
 		bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
 
-		selected_objects = bpy.context.selected_objects
 		uv_name = "Light Map"
-		for obj in selected_objects:
+		for obj in objects:
 			if obj.type == 'MESH':                
 				bpy.context.view_layer.objects.active = obj
 				obj.data.uv_layers.new(name=uv_name)
+				bpy.types.Mesh.uv_layer.new
 				obj.data.uv_layers.active = obj.data.uv_layers[uv_name]
 				obj.data.uv_layers[uv_name].active_render = True
 				bpy.ops.object.mode_set(mode='EDIT')
 				bpy.ops.mesh.select_mode(use_extend=False, use_expand=False, type='FACE')
 				bpy.ops.mesh.select_all(action='SELECT')
-				bpy.ops.uv.lightmap_pack()
+				if self.get('lightmap_pack_type') == 'lightmap_pack':
+					bpy.ops.uv.lightmap_pack()
+				else:
+					# TODO right this function :)
+					print("not made yet")
 				bpy.ops.object.mode_set(mode='OBJECT')
-
-		objects = selected_objects
 		return objects
+
 
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):

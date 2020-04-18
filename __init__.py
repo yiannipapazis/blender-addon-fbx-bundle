@@ -155,7 +155,7 @@ class FBXBundleSettings(bpy.types.PropertyGroup):
 	target_platform: bpy.props.EnumProperty(items= 
 		[	
 			('UNITY', 'Unity ', 'Unity engine export, fixes axis rotation issues'),
-			('UNREAL', 'Unreal ', 'Unreal engine export'),
+			('UNREAL', 'Unreal', 'Unreal engine export'),
 			('BLENDER', 'Collada', 'Default Blender *.DAE export'),
 			('GLTF', 'glTF', 'GL Transmission Format'),
 			('OBJ', 'OBJ', 'OBJ')
@@ -503,7 +503,7 @@ def icon_get(name):
 	if name not in preview_icons:
 		print("Icon '{}' not found ".format(name))
 	# TODO fix broken icons. Don't understand why it can't find OBJ?
-	return preview_icons["unreal"].icon_id
+	return preview_icons[name].icon_id
 
 
 preview_icons = None
@@ -548,7 +548,7 @@ def register():
 		"unity.png", 
 		"unreal.png", 
 		"blender.png",
-		"gltf.png"
+		"gltf.png",
 		"obj.png"
 	]
 	for icon in icons:
