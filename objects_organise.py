@@ -57,7 +57,7 @@ def get_objects():
 			for root in roots:
 				collect_recursive(root, 0)
 
-		elif bpy.context.scene.FBXBundleSettings.mode_bundle == 'GROUP':
+		elif bpy.context.scene.FBXBundleSettings.mode_bundle == 'COLLECTION':
 			# Collect group objects
 			groups = []
 
@@ -365,7 +365,7 @@ def get_key(obj):
 	elif mode_bundle == 'COLLECTION':
 		# TODO Make this work
 		# Use group name
-		if len(obj.users_group) >= 1:
+		if len(obj.users_collection) >= 1:
 			return obj.users_collection[0].name
 	
 	elif mode_bundle == 'COLLECTION_INSTANCE':
