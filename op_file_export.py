@@ -110,7 +110,7 @@ def export(self, target_platform):
 
                 # Copy
                 bpy.ops.object.duplicate()
-                bpy.ops.object.convert(target='MESH')
+                # bpy.ops.object.convert(target='MESH')
                 bpy.context.object.name = name_original
                 copies.append(bpy.context.object)
 
