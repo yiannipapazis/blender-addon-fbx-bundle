@@ -63,14 +63,14 @@ def get_objects():
 
 			# Collect groups from input selection
 			for obj in objects:
-				for group in obj.users_group:
+				for group in obj.users_collection:
 					if group.name not in groups:
 						groups.append(group.name)
 
 			# Collect objects of groups
 			for name in groups:
-				if name in bpy.data.groups:
-					for obj in bpy.data.groups[name].objects:
+				if name in bpy.data.collections:
+					for obj in bpy.data.collections[name].objects:
 						if obj not in objects:
 							objects.append(obj)
 
