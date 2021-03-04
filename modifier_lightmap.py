@@ -79,7 +79,7 @@ class Modifier(modifier.Modifier):
 				if self.get('lightmap_pack_type') == 'lightmap_pack':
 					bpy.ops.uv.lightmap_pack()
 				else:
-					# TODO right this function :)
+					# TODO write this function :)
 					print("not made yet")
 				bpy.ops.object.mode_set(mode='OBJECT')
 		return objects

@@ -18,7 +18,7 @@ def is_object_valid(obj):
 	if obj.hide_viewport:
 		return False
 		
-	return obj.type == 'MESH' or obj.type == 'FONT' or obj.type == 'CURVE' or obj.type == 'EMPTY'
+	return obj.type == 'MESH' or obj.type == 'FONT' or obj.type == 'CURVE' or obj.type == 'EMPTY' or obj.type == 'ARMATURE'
 
 
 def get_objects():
@@ -363,9 +363,8 @@ def get_key(obj):
 			return obj.name
 
 	elif mode_bundle == 'COLLECTION':
-		# TODO Make this work
-		# Use group name
-		if len(obj.users_group) >= 1:
+		# Use collection name
+		if len(obj.users_collection) >= 1:
 			return obj.users_collection[0].name
 	
 	elif mode_bundle == 'COLLECTION_INSTANCE':

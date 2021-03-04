@@ -36,4 +36,5 @@ modifiers = list([
 	modifier_LOD.Modifier(),
 	modifier_vertex_ao.Modifier(),
 	modifier_lightmap.Modifier()
+	# TODO add apply negative scale modifier
 ])
