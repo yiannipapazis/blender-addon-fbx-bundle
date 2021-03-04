@@ -31,7 +31,7 @@ class Platform(platform.Platform):
 			axis_forward	='Y', 
 			axis_up			='Z', 
 
-			object_types={'ARMATURE', 'MESH', 'EMPTY'},
+			object_types={'ARMATURE', 'MESH', 'EMPTY', 'OTHER'},
 
 			apply_scale_options = 'FBX_SCALE_NONE',
 			global_scale =1.00, 
