@@ -80,6 +80,9 @@ def export(self, target_platform):
     previous_pivot = bpy.context.tool_settings.transform_pivot_point
     previous_cursor = bpy.context.scene.cursor.location.copy()
 
+    # Get mode
+    mode_pivot = bpy.context.scene.FBXBundleSettings.mode_pivot
+
     if not bpy.context.view_layer.objects.active:
         bpy.context.view_layer.objects.active = bpy.context.selected_objects[0]
 
@@ -118,10 +121,22 @@ def export(self, target_platform):
                 bpy.context.object.name = name_original
                 copies.append(bpy.context.object)
 
-                bpy.context.object.location -= pivot
-            # TODO: log error or something
+                # If mode is parent clear parent
+                # Noticed pivot offset breaks with parents and rotations
+                if mode_pivot == 'PARENT':
+                    parent = objects[-1]
+                    if obj == parent:
+                        bpy.context.object.location -= pivot
+                    else:
+                        bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
+                        bpy.context.object.location -= pivot
+
+                else:
+                    bpy.context.object.location -= pivot
+
             except RuntimeError:
                 print("Error")
+                # TODO: log error or something
 
         bpy.ops.object.select_all(action="DESELECT")
         for obj in copies:
