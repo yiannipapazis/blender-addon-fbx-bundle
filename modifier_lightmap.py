@@ -11,11 +11,11 @@ from . import modifier
 imp.reload(modifier) 
 
 class Settings(modifier.Settings):
-	active = bpy.props.BoolProperty (
+	active : bpy.props.BoolProperty (
 		name="Active",
 		default=False
 	)
-	lightmap_pack_type = bpy.props.EnumProperty(
+	lightmap_pack_type : bpy.props.EnumProperty(
 		name = "Pack Type",
 		items = (
 			("lightmap_pack", "Lightmap Pack", "Uses Blender's Lightmap Pack Operator", 1),
@@ -70,7 +70,6 @@ class Modifier(modifier.Modifier):
 			if obj.type == 'MESH':                
 				bpy.context.view_layer.objects.active = obj
 				obj.data.uv_layers.new(name=uv_name)
-				bpy.types.Mesh.uv_layer.new
 				obj.data.uv_layers.active = obj.data.uv_layers[uv_name]
 				obj.data.uv_layers[uv_name].active_render = True
 				bpy.ops.object.mode_set(mode='EDIT')
@@ -78,6 +77,10 @@ class Modifier(modifier.Modifier):
 				bpy.ops.mesh.select_all(action='SELECT')
 				if self.get('lightmap_pack_type') == 'lightmap_pack':
 					bpy.ops.uv.lightmap_pack()
+				if self.get('lightmap_pack_type') == 'layout_pack':
+					bpy.ops.uv.average_islands_scale()
+					bpy.ops.uv.pack_islands()
+
 				else:
 					# TODO write this function :)
 					print("not made yet")
