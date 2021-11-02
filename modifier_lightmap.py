@@ -63,7 +63,7 @@ class Modifier(modifier.Modifier):
 		# TODO Fix scenario where there's already a lightmap or another UV set
 		
 		bpy.ops.object.convert(target='MESH', keep_original=False)
-		bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
+		bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)
 
 		uv_name = "Light Map"
 		for obj in objects:
@@ -72,19 +72,17 @@ class Modifier(modifier.Modifier):
 				obj.data.uv_layers.new(name=uv_name)
 				obj.data.uv_layers.active = obj.data.uv_layers[uv_name]
 				obj.data.uv_layers[uv_name].active_render = True
-				bpy.ops.object.mode_set(mode='EDIT')
-				bpy.ops.mesh.select_mode(use_extend=False, use_expand=False, type='FACE')
-				bpy.ops.mesh.select_all(action='SELECT')
-				if self.get('lightmap_pack_type') == 'lightmap_pack':
-					bpy.ops.uv.lightmap_pack()
-				if self.get('lightmap_pack_type') == 'layout_pack':
-					bpy.ops.uv.average_islands_scale()
-					bpy.ops.uv.pack_islands()
 
-				else:
-					# TODO write this function :)
-					print("not made yet")
-				bpy.ops.object.mode_set(mode='OBJECT')
+		# Enter edit mode and pack UVs
+		bpy.ops.object.mode_set(mode='EDIT')
+		bpy.ops.mesh.select_mode(use_extend=False, use_expand=False, type='FACE')
+		bpy.ops.mesh.select_all(action='SELECT')
+		if self.get('lightmap_pack_type') == 'lightmap_pack':
+			bpy.ops.uv.lightmap_pack()
+		if self.get('lightmap_pack_type') == 'layout_pack':
+			bpy.ops.uv.average_islands_scale()
+			bpy.ops.uv.pack_islands()
+			bpy.ops.object.mode_set(mode='OBJECT')
 		return objects
 
 
