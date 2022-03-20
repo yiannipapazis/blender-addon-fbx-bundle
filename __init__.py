@@ -119,12 +119,12 @@ class FBXBundleSettings(bpy.types.PropertyGroup):
 	)
 	collapseBundles: bpy.props.BoolProperty (
 		name="Collapse",
-		default=False,
+		default=True,
 		description="Compact list view"
 	)
 	include_children: bpy.props.BoolProperty (
 		name="Incl. Children",
-		default=False,
+		default=True,
 		description="Include nested children in bundles, e.g parent or group."
 	)
 	recent: bpy.props.StringProperty (
@@ -141,7 +141,7 @@ class FBXBundleSettings(bpy.types.PropertyGroup):
 		('COLLECTION_INSTANCE', 'Collection Instance', "Bundle by 'Collection'"),
 		('MATERIAL', 'Material', "Bundle by matching material names"),
 		('SCENE', 'Scene', "Bundle by current scene")
-		], name = "Bundle Mode", default = 'NAME'
+		], name = "Bundle Mode", default = 'PARENT'
 	)
 	mode_pivot: bpy.props.EnumProperty(items=[
 		('OBJECT_FIRST', 'First Name', "Pivot at the first object sorted by name"), 
@@ -150,7 +150,7 @@ class FBXBundleSettings(bpy.types.PropertyGroup):
 		('SCENE', 'Scene 0,0,0', "Pivot at the Scene center 0,0,0'"),
 		('PARENT', 'Parent', "Pivot from the parent object"),
 		('EMPTY', 'Empty Gizmo', "Empty gizmo object of: Arrow, Plain Axes, Single Arrow")
-		], name = "Pivot From", default = 'OBJECT_FIRST'
+		], name = "Pivot From", default = 'PARENT'
 	)
 	target_platform: bpy.props.EnumProperty(items= 
 		[	

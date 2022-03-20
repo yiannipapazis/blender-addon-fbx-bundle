@@ -15,7 +15,7 @@ class Settings(modifier.Settings):
 		name="Active",
 		default=False
 	)
-	lightmap_pack_type = bpy.props.EnumProperty(
+	lightmap_pack_type: bpy.props.EnumProperty(
 		name = "Pack Type",
 		items = (
 			("lightmap_pack", "Lightmap Pack", "Uses Blender's Lightmap Pack Operator", 1),
@@ -70,7 +70,6 @@ class Modifier(modifier.Modifier):
 			if obj.type == 'MESH':                
 				bpy.context.view_layer.objects.active = obj
 				obj.data.uv_layers.new(name=uv_name)
-				bpy.types.Mesh.uv_layer.new
 				obj.data.uv_layers.active = obj.data.uv_layers[uv_name]
 				obj.data.uv_layers[uv_name].active_render = True
 				bpy.ops.object.mode_set(mode='EDIT')

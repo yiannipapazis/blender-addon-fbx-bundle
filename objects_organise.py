@@ -467,3 +467,38 @@ class ObjectBounds:
 		collide_y = is_collide_1D(self.min.y, self.max.y, other.min.y, other.max.y)
 		collide_z = is_collide_1D(self.min.z, self.max.z, other.min.z, other.max.z)
 		return collide_x and collide_y and collide_z
+
+
+def consolidate_objects(objects):
+	for obj in objects:
+			if obj.type == 'EMPTY' and obj.instance_collection:
+				bpy.ops.object.duplicates_make_real()
+				# Append newly converted objects
+				objects.extend(bpy.context.selected_objects)
+
+	# Find a mesh object so we can run convert operator
+	for obj in objects:
+		if obj.type == 'MESH':
+			bpy.context.view_layer.objects.active = obj
+			break
+		continue
+
+	bpy.ops.object.make_single_user(
+			type='SELECTED_OBJECTS', object=True, obdata=True)
+
+	bpy.ops.object.convert(target='MESH', keep_original=False)
+	bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
+
+	# Consolidate UVs
+	uv_map_name = "UVMap"
+	for obj in objects:
+		#bpy.context.view_layer.objects.active = obj
+		for layer in obj.data.uv_layers:
+			if layer.active_render:
+				active = layer
+			else:
+				if not layer.name == "Lightmap":
+					obj.data.uv_layers.remove(layer)
+		active.name = uv_map_name
+
+	return objects
