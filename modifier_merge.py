@@ -76,13 +76,14 @@ class Modifier(modifier.Modifier):
 
 
 		# Merge objects into single item
-		objects_organise.consolidate_objects(objects)
+		objects_organise.consolidate_objects(objects, apply_normals=True)
 
 		bpy.ops.object.join()
 	
 		bpy.context.object.name = name #assign bundle name
 		bpy.context.scene.cursor.location = Vector((0,0,0)) 
 		bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
+		bpy.ops.object.material_slot_remove_unused()
 
 		# Convert to mesh
 		bpy.ops.object.convert(target='MESH')
