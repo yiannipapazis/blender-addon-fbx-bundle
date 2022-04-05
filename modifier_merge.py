@@ -89,7 +89,7 @@ class Modifier(modifier.Modifier):
 		bpy.ops.object.convert(target='MESH')
 
 		# Apply rotation
-		bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
+		bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)
 		
 
 		# Merge Vertices?

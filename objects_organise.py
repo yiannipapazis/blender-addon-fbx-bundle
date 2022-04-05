@@ -502,12 +502,13 @@ def consolidate_objects(objects, apply_normals):
 	uv_map_name = "UVMap"
 	for obj in objects:
 		#bpy.context.view_layer.objects.active = obj
-		for layer in obj.data.uv_layers:
-			if layer.active_render:
-				active = layer
-			else:
-				if not layer.name == "Lightmap":
-					obj.data.uv_layers.remove(layer)
-		active.name = uv_map_name
+		if obj.type == 'MESH':
+			for layer in obj.data.uv_layers:
+				if layer.active_render:
+					active = layer
+					active.name = uv_map_name
+				else:
+					if not layer.name == "Lightmap":
+						obj.data.uv_layers.remove(layer)
 
 	return objects
