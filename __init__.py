@@ -158,7 +158,8 @@ class FBXBundleSettings(bpy.types.PropertyGroup):
 			('UNREAL', 'Unreal', 'Unreal engine export'),
 			('BLENDER', 'Collada', 'Default Blender *.DAE export'),
 			('GLTF', 'glTF', 'GL Transmission Format'),
-			('OBJ', 'OBJ', 'OBJ')
+			('OBJ', 'OBJ', 'OBJ'),
+			('HOUDINI', 'Houdini', 'SideFX Houdini export')
 		], 
 		description="Target platform for the FBX exports.",
 		name = "Target Platform", 
@@ -502,12 +503,12 @@ class op_remove(bpy.types.Operator):
 def icon_get(name):
 	if name not in preview_icons:
 		print("Icon '{}' not found ".format(name))
-	# TODO fix broken icons. Don't understand why it can't find OBJ?
 	return preview_icons[name].icon_id
 
 
 preview_icons = None
 def icon_register(fileName):
+	print(fileName)
 	name = fileName.split('.')[0]   # Don't include file extension
 	icons_dir = os.path.join(os.path.dirname(__file__), "icons")
 	preview_icons.load(name, os.path.join(icons_dir, fileName), 'IMAGE')
@@ -549,7 +550,8 @@ def register():
 		"unreal.png", 
 		"blender.png",
 		"gltf.png",
-		"obj.png"
+		"obj.png",
+		"houdini.png"
 	]
 	for icon in icons:
 		icon_register(icon)
