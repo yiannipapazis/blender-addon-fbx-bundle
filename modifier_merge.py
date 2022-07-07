@@ -75,9 +75,10 @@ class Modifier(modifier.Modifier):
 	def process_objects(self, name, objects):
 
 
+
 		# Merge objects into single item
 		objects_organise.consolidate_objects(objects, apply_normals=True)
-
+		
 		bpy.ops.object.join()
 	
 		bpy.context.object.name = name #assign bundle name
@@ -86,7 +87,7 @@ class Modifier(modifier.Modifier):
 		bpy.ops.object.material_slot_remove_unused()
 
 		# Convert to mesh
-		bpy.ops.object.convert(target='MESH')
+		#bpy.ops.object.convert(target='MESH')
 
 		# Apply rotation
 		bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)
@@ -183,9 +184,16 @@ class Modifier(modifier.Modifier):
 			# return material objects
 			return mat_objs
 
-		# Re-assign array
-		objects = [bpy.context.object]
+		# Test if object still exsits
+		filtered_objects = []
+		for obj in objects:
+			try:
+				obj.type					
+				filtered_objects.append(obj)
+			except ReferenceError:
+				continue
 
+		objects = filtered_objects
 
 		return objects
 
