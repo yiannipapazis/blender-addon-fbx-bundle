@@ -499,18 +499,14 @@ def consolidate_objects(objects, apply_normals, merge_uvs=True, convert_mesh=Tru
 
 	
 	# Find a mesh object so we can run convert operator
-	for obj in objects:
-		if obj.type == 'MESH':
-			bpy.context.view_layer.objects.active = obj
-			break
-		continue
+	make_mesh_type_active(objects)
 
 	bpy.ops.object.make_single_user(
-			type='SELECTED_OBJECTS', object=True, obdata=True)
-
+			type='SELECTED_OBJECTS', object=False, obdata=True)
+	
 	# TODO figure out a better way to preserve auto smooth
 	if apply_normals:
-		for obj in objects:
+		for obj in objects:				
 			if obj.type == 'MESH':
 				data = obj.data
 				if data.use_auto_smooth:
@@ -535,4 +531,30 @@ def consolidate_objects(objects, apply_normals, merge_uvs=True, convert_mesh=Tru
 						if not layer.name == "Lightmap":
 							obj.data.uv_layers.remove(layer)
 
+	bpy.ops.object.convert(target='MESH', keep_original=False)
+
+	# Consolidate UVs
+	uv_map_name = "UVMap"
+	for obj in objects:
+		bpy.context.view_layer.objects.active = obj
+		if obj.type == 'MESH':
+			for layer in obj.data.uv_layers:
+				if layer.active_render:
+					active = layer
+					active.name = uv_map_name
+				else:
+					if not layer.name == "Lightmap":
+						obj.data.uv_layers.remove(layer)
+
+	#Find Mesh Type Again
+	make_mesh_type_active(objects)
+
 	return objects
+
+def make_mesh_type_active(objects):
+		for obj in objects:
+			if obj.type == 'MESH':
+				bpy.context.view_layer.objects.active = obj
+				print("Active should be " + obj.name)
+				break
+			continue
