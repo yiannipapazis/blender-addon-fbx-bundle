@@ -29,7 +29,7 @@ class Platform(platform.Platform):
 			use_uvs=True,
 			use_materials=True,
 			global_scale=1,
-			axis_forward = 'Z',
+			axis_forward = '-Z',
 			axis_up = 'Y'
 
 
