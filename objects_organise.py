@@ -531,8 +531,6 @@ def consolidate_objects(objects, apply_normals, merge_uvs=True, convert_mesh=Tru
 						if not layer.name == "Lightmap":
 							obj.data.uv_layers.remove(layer)
 
-	bpy.ops.object.convert(target='MESH', keep_original=False)
-
 	# Consolidate UVs
 	uv_map_name = "UVMap"
 	for obj in objects:
