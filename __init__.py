@@ -341,7 +341,7 @@ class Panel_Files(bpy.types.Panel):
 		layout = self.layout
 		
 		# Get bundles
-		bundles = objects_organise.get_bundles()
+		bundles = objects_organise.get_bundles(fast=True)
 
 		icon = icon_get(bpy.context.scene.FBXBundleSettings.target_platform.lower())
 

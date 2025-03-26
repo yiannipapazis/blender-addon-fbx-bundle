@@ -21,7 +21,7 @@ def is_object_valid(obj):
 	return obj.type == 'MESH' or obj.type == 'FONT' or obj.type == 'CURVE' or obj.type == 'EMPTY' or obj.type == 'ARMATURE'
 
 
-def get_objects():
+def get_objects(fast=True):
 	objects = []
 	for obj in bpy.context.selected_objects:
 		objects.append(obj)
@@ -35,7 +35,7 @@ def get_objects():
 			if obj not in objects:
 				objects.append(obj)
 			
-			if depth < limit:#Don't exceed limit on traversal depth
+			if depth < limit: #Don't exceed limit on traversal depth
 				for child in obj.children:
 					collect_recursive(child, depth+1)
 		
@@ -60,20 +60,16 @@ def get_objects():
 
 		elif bpy.context.scene.FBXBundleSettings.mode_bundle == 'COLLECTION':
 			# Collect group objects
-			groups = []
+			if not fast:
+				# Collect groups from input selection
+				groups = []
+				for obj in objects:
+					groups += [g for g in obj.users_collection if g not in groups]
 
-			# Collect groups from input selection
-			for obj in objects:
-				for group in obj.users_collection:
-					if group.name not in groups:
-						groups.append(group.name)
-
-			# Collect objects of groups
-			for name in groups:
-				if name in bpy.data.collections:
-					for obj in bpy.data.collections[name].objects:
-						if obj not in objects:
-							objects.append(obj)
+				# Collect objects of groups
+				# TODO needs to check view layer collection
+				for grp in groups:
+					objects += [o for o in grp.objects if o not in objects]
 
 		elif bpy.context.scene.FBXBundleSettings.mode_bundle == 'SCENE':
 			# Include all objects of the scene
@@ -182,40 +178,18 @@ def recent_load_objects():
 	
 
 
-
-def get_bundles():
-	objects = get_objects()
-
-	# Collect groups by key
-	groups = []
+0
+def get_bundles(fast=False):
+	objects = get_objects(fast=fast)
+    
+	bundles = {}
 	for obj in objects:
 		key = get_key(obj)
-
-		if(len(groups) == 0):
-			groups.append([obj])
+		if key not in bundles.keys():
+			bundles[key] = [obj]
 		else:
-			isFound = False
-			for group in groups:
-				if key == get_key(group[0]):
-					group.append(obj)
-					isFound = True
-					break
-			if not isFound:
-				groups.append([obj])
-
-	# Sort keys alphabetically
-	keys = [get_key(group[0]) for group in groups]
-	keys.sort()
-	bundles = {}
-	for key in keys:
-		if key not in bundles:
-			bundles[key] = []
-
-		for group in groups:
-			if key == get_key(group[0]):
-				bundles[key] = group
-				break
-
+			bundles[key].append(obj)
+	
 	if len(bundles) == 1 and 'UNDEFINED' in bundles:
 		bundles.clear() 
 
