@@ -31,7 +31,7 @@ class Modifier(modifier.Modifier):
 			col = layout.column(align=True)
 
 	def process_objects(self, name, objects):
-
+		
 		objects_organise.consolidate_objects(objects, apply_normals=False, convert_mesh=False, merge_uvs=False)
 
 		return objects

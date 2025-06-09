@@ -466,11 +466,44 @@ class ObjectBounds:
 
 def consolidate_objects(objects, apply_normals, merge_uvs=True, convert_mesh=True):
 	for obj in objects:
-			if obj.type == 'EMPTY' and obj.instance_collection:
-				bpy.ops.object.duplicates_make_real()
-				# Append newly converted objects
-				objects.extend(bpy.context.selected_objects)
+		if obj.type in ('MESH','EMPTY'):
+			# TODO multi thread this. Only need to run duplicates make real once
+			bpy.ops.object.select_all(action='DESELECT')
+			# Select and make active
+			bpy.context.view_layer.objects.active = obj
+			obj.select_set(state=True)
+			
+			bpy.ops.object.duplicates_make_real()
+			
+        	# Test if operation did anything
+			exten = bpy.context.selected_objects
+			if len(exten) < 2:
+				continue
+			
+			# Recursively add new objects
+			exten = [o for o in exten if o != obj]
+			objects.extend(exten)
+			objects.remove(obj)
 
+			bpy.ops.object.select_all(action='DESELECT')
+			bpy.context.view_layer.objects.active = obj
+			obj.select_set(state=True)
+			bpy.ops.object.delete()
+	
+	# After we've insured that there's no more instanced objects - apply modifiers
+	for obj in objects:
+		bpy.ops.object.select_all(action="DESELECT")
+		obj.select_set(state=True)
+		bpy.context.view_layer.objects.active = obj
+		obj.hide_viewport = False
+
+		# Apply modifiers
+		if obj.type == 'MESH':
+			bpy.ops.object.convert(target='MESH')
+	
+	# Reselect objects list
+	bpy.ops.object.select_all(action='DESELECT')
+	[o.select_set(state=True) for o in objects]
 	
 	# Find a mesh object so we can run convert operator
 	make_mesh_type_active(objects)
@@ -527,6 +560,5 @@ def make_mesh_type_active(objects):
 		for obj in objects:
 			if obj.type == 'MESH':
 				bpy.context.view_layer.objects.active = obj
-				print("Active should be " + obj.name)
 				break
 			continue
