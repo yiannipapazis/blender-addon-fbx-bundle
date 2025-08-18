@@ -93,9 +93,12 @@ def export(self, target_platform):
     bpy.context.tool_settings.transform_pivot_point = 'MEDIAN_POINT'
 
     objects_organise.recent_store(bundles)
-
+    
     for name, objects in bundles.items():
         pivot = objects_organise.get_pivot(objects).copy()
+        
+        # Apply modifiers
+        objects_organise.consolidate_objects(objects, convert_mesh=True)
 
         # Detect if animation export...
         use_animation = objects_organise.get_objects_animation(objects)
@@ -132,8 +135,8 @@ def export(self, target_platform):
 
             except RuntimeError:
                 print("Error")
-                # TODO: log error or something
-
+                # TODO: remove this
+        
         bpy.ops.object.select_all(action="DESELECT")
         for obj in copies:
             obj.select_set(state=True)

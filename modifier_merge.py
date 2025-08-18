@@ -73,11 +73,6 @@ class Modifier(modifier.Modifier):
 
 
 	def process_objects(self, name, objects):
-
-
-
-		# Merge objects into single item
-		objects_organise.consolidate_objects(objects, apply_normals=True)
 		
 		bpy.ops.object.join()
 	

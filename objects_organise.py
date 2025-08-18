@@ -464,7 +464,7 @@ class ObjectBounds:
 		return collide_x and collide_y and collide_z
 
 
-def consolidate_objects(objects, apply_normals, merge_uvs=True, convert_mesh=True):
+def consolidate_objects(objects, apply_normals=True, merge_uvs=True, convert_mesh=True):
 	for obj in objects:
 		if obj.type in ('MESH','EMPTY'):
 			# TODO multi thread this. Only need to run duplicates make real once
