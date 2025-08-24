@@ -6,7 +6,6 @@ from mathutils import Vector
 
 from . import modifier_rename
 from . import modifier_merge
-from . import modifier_make_inst_real
 from . import modifier_copy_modifiers
 from . import modifier_collider
 from . import modifier_LOD
