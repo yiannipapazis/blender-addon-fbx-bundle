@@ -472,6 +472,11 @@ def consolidate_objects(objects, apply_normals=True, merge_uvs=True, convert_mes
 			# Select and make active
 			bpy.context.view_layer.objects.active = obj
 			obj.select_set(state=True)
+
+			# Copy object data
+			if obj.data:
+				copy = obj.data.copy()
+				obj.data = copy
 			
 			bpy.ops.object.duplicates_make_real()
 			
