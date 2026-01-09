@@ -98,7 +98,7 @@ def export(self, target_platform):
         pivot = objects_organise.get_pivot(objects).copy()
         
         # Apply modifiers
-        objects_organise.consolidate_objects(objects, convert_mesh=True)
+        #objects_organise.consolidate_objects(objects, convert_mesh=True)
 
         # Detect if animation export...
         use_animation = objects_organise.get_objects_animation(objects)
