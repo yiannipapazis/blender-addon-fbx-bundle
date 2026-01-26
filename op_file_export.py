@@ -96,15 +96,13 @@ def export(self, target_platform):
     
     for name, objects in bundles.items():
         pivot = objects_organise.get_pivot(objects).copy()
-        
-        # Apply modifiers
-        objects_organise.consolidate_objects(objects, convert_mesh=True)
 
         # Detect if animation export...
         use_animation = objects_organise.get_objects_animation(objects)
 
         copies = []
 
+        # Create copies
         for obj in objects:
             try:
                 name_original = obj.name
@@ -117,25 +115,26 @@ def export(self, target_platform):
                 # Copy
                 bpy.ops.object.duplicate()
                 
-                bpy.context.object.name = name_original
+                bpy.context.object.name = name_original                
                 copies.append(bpy.context.object)
-
-                # If mode is parent clear parent
-                # Noticed pivot offset breaks with parents and rotations
-                if mode_pivot == 'PARENT':
-                    parent = objects[-1]
-                    if obj == parent:
-                        bpy.context.object.location -= pivot
-                    else:
-                        bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
-                        bpy.context.object.location -= pivot
-
-                else:
-                    bpy.context.object.location -= pivot
-
             except RuntimeError:
                 print("Error")
                 # TODO: remove this
+        
+        # Apply modifiers and such
+        copies = objects_organise.consolidate_objects(copies, convert_mesh=True)
+
+        for obj in copies:
+            bpy.ops.object.select_all(action="DESELECT")
+            obj.select_set(state=True)
+            bpy.context.view_layer.objects.active = obj
+            obj.hide_viewport = False
+
+            # If mode is parent clear parent
+            # Noticed pivot offset breaks with parents and rotations
+            if mode_pivot == 'PARENT':
+                bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
+            bpy.context.object.location -= pivot
         
         bpy.ops.object.select_all(action="DESELECT")
         for obj in copies:
