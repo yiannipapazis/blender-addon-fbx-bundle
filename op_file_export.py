@@ -93,88 +93,9 @@ def export(self, target_platform):
     bpy.context.tool_settings.transform_pivot_point = 'MEDIAN_POINT'
 
     objects_organise.recent_store(bundles)
-    
+
     for name, objects in bundles.items():
-        pivot = objects_organise.get_pivot(objects).copy()
-        
-        # Apply modifiers
-        #objects_organise.consolidate_objects(objects, convert_mesh=True)
-
-        # Detect if animation export...
-        use_animation = objects_organise.get_objects_animation(objects)
-
-        copies = []
-
-        # Create copies
-        for obj in objects:
-            try:
-                name_original = obj.name
-                obj.name = prefix_copy + name_original
-                bpy.ops.object.select_all(action="DESELECT")
-                obj.select_set(state=True)
-                bpy.context.view_layer.objects.active = obj
-                obj.hide_viewport = False
-
-                # Copy
-                bpy.ops.object.duplicate()
-                
-                bpy.context.object.name = name_original                
-                copies.append(bpy.context.object)
-            except RuntimeError:
-                print("Error")
-                # TODO: remove this
-
-        for obj in copies:
-            bpy.ops.object.select_all(action="DESELECT")
-            obj.select_set(state=True)
-            bpy.context.view_layer.objects.active = obj
-            obj.hide_viewport = False
-
-            # If mode is parent clear parent
-            # Noticed pivot offset breaks with parents and rotations
-            if mode_pivot == 'PARENT':
-                bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
-            bpy.context.object.location -= pivot
-        
-        bpy.ops.object.select_all(action="DESELECT")
-        for obj in copies:
-            obj.select_set(state=True)
-        bpy.context.view_layer.objects.active = copies[0]
-
-        # Apply modifiers
-
-        # full = self.process_path(name, path)+"{}".format(os.path.sep)+platforms.platforms[mode].get_filename( self.process_name(name) )
-        # os.path.join(folder, name)+"."+platforms.platforms[mode].extension
-        path_folder = folder
-        path_name = name
-        for modifier in modifiers.modifiers:
-            if modifier.get("active"):
-                copies = modifier.process_objects(name, copies)
-                path_folder = modifier.process_path(path_name, path_folder)
-                path_name = modifier.process_name(path_name)
-
-        path_full = os.path.join(path_folder, path_name) + "." + platforms.platforms[mode].extension
-
-        # Create path if not yet available
-        directory = os.path.dirname(path_full)
-        pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
-
-        # Select all copies
-        bpy.ops.object.select_all(action="DESELECT")
-        for obj in copies:
-            obj.select_set(state=True)
-
-        # Export per platform (Unreal, Unity, ...)
-        print("Export {}x = {}".format(len(objects), path_full))
-        platforms.platforms[mode].file_export(path_full)
-
-        # Delete copies
-        bpy.ops.object.delete()
-        copies.clear()
-
-        # Restore names
-        for obj in objects:
-            obj.name = obj.name.replace(prefix_copy, "")
+        export_bundle(self, name, objects, folder, mode, mode_pivot)
 
     # Restore previous settings
     bpy.context.scene.unit_settings.system = previous_unit_system
@@ -186,7 +107,6 @@ def export(self, target_platform):
         obj.select_set(state=True)
 
     # Show popup
-
     def draw(self, context):
         filenames = []
         # Get bundle file names
@@ -199,3 +119,58 @@ def export(self, target_platform):
         self.layout.label(text="Exported {}".format(", ".join(filenames)))
 
     bpy.context.window_manager.popup_menu(draw, title="Exported {}x files".format(len(bundles)), icon='INFO')
+
+
+def export_bundle(self, name, objects, folder, mode, mode_pivot):
+    # Store original locations
+    original_locations = {obj: obj.location.copy() for obj in objects}
+
+    pivot = objects_organise.get_pivot(objects).copy()
+
+    # Get root objects
+    root_objects = [obj for obj in objects if obj.parent not in objects]
+
+    # Deselect all
+    bpy.ops.object.select_all(action="DESELECT")
+
+    for obj in root_objects:
+        obj.select_set(state=True)
+        bpy.context.view_layer.objects.active = obj
+        obj.hide_viewport = False
+        bpy.context.object.location -= pivot
+
+    bpy.ops.object.select_all(action="DESELECT")
+    for obj in objects:
+        obj.select_set(state=True)
+    bpy.context.view_layer.objects.active = objects[0]
+
+    # Apply modifiers
+    processed_objects = objects
+    path_folder = folder
+    path_name = name
+    for modifier in modifiers.modifiers:
+        if modifier.get("active"):
+            processed_objects = modifier.process_objects(name, processed_objects)
+            path_folder = modifier.process_path(path_name, path_folder)
+            path_name = modifier.process_name(path_name)
+
+    path_full = os.path.join(path_folder, path_name) + "." + platforms.platforms[mode].extension
+
+    # Create path if not yet available
+    directory = os.path.dirname(path_full)
+    pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
+
+    # Select all objects in the bundle
+    bpy.ops.object.select_all(action="DESELECT")
+    for obj in processed_objects:
+        obj.select_set(state=True)
+
+    # Export per platform (Unreal, Unity, ...)
+    print("Export {}x = {}".format(len(objects), path_full))
+    platforms.platforms[mode].file_export(path_full)
+
+    # Move objects back to their original locations
+    for obj in root_objects:
+        obj.location = original_locations[obj]
+
+    return
