@@ -46,12 +46,12 @@ bl_info = {
 	"name": "FBX Bundle",
 	"description": "Export object selections in FBX bundles",
 	"author": "renderhjs",
-	"blender": (2, 80, 0),
-	"version": (1, 5, 3),
+	"blender": (4, 50, 0),
+	"version": (1, 5, 4),
 	"category": "3D View",
 	"location": "View3D",
 	"warning": "",
-	"wiki_url": "http://renderhjs.net/fbxbundle/",
+	"wiki_url": "https://github.com/yiannipapazis/blender-addon-fbx-bundle/",
 	"tracker_url": "",
 }
 
