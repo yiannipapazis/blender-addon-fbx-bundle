@@ -12,7 +12,6 @@ if "bpy" in locals():
 	imp.reload(op_file_export_recent_clear)
 	imp.reload(op_file_import)
 	imp.reload(op_file_open_folder)
-	imp.reload(op_pivot_ground)
 	imp.reload(op_tool_geometry_fix)
 	imp.reload(op_tool_pack_bundles)
 	
@@ -32,7 +31,6 @@ else:
 	from . import op_file_export_recent_clear
 	from . import op_file_import
 	from . import op_file_open_folder
-	from . import op_pivot_ground
 	from . import op_tool_geometry_fix
 	from . import op_tool_pack_bundles
 
@@ -134,23 +132,11 @@ class FBXBundleSettings(bpy.types.PropertyGroup):
 
 
 	mode_bundle: bpy.props.EnumProperty(items= 
-		[('NAME', 'Name', "Bundle by matching object names"), 
-		('PARENT', 'Parent', "Bundle by the parent object"), 
-		# ('SPACE', 'Space', "Bundle by shared space"), 
+		[('PARENT', 'Parent', "Bundle by the parent object"), 
 		('COLLECTION', 'Collection', "Bundle by 'Collection'"),
 		('COLLECTION_INSTANCE', 'Collection Instance', "Bundle by 'Collection'"),
-		('MATERIAL', 'Material', "Bundle by matching material names"),
 		('SCENE', 'Scene', "Bundle by current scene")
 		], name = "Bundle Mode", default = 'PARENT'
-	)
-	mode_pivot: bpy.props.EnumProperty(items=[
-		('OBJECT_FIRST', 'First Name', "Pivot at the first object sorted by name"), 
-		('OBJECT_LOWEST', 'Lowest Object', "Pivot at the lowest Z object's pivot"),
-		('BOUNDS_BOTTOM', 'Bottom Center', "Pivot at the bottom center of the bounds of the bundle"), 
-		('SCENE', 'Scene 0,0,0', "Pivot at the Scene center 0,0,0'"),
-		('PARENT', 'Parent', "Pivot from the parent object"),
-		('EMPTY', 'Empty Gizmo', "Empty gizmo object of: Arrow, Plain Axes, Single Arrow")
-		], name = "Pivot From", default = 'PARENT'
 	)
 	target_platform: bpy.props.EnumProperty(items= 
 		[	
@@ -210,11 +196,6 @@ class Panel_Core(bpy.types.Panel):
 		row = col.row(align=True)
 		row.prop(context.scene.FBXBundleSettings, "mode_bundle", text="Bundle by", icon='GROUP')
 		row.operator("wm.url_open", text="", icon='QUESTION').url = "http://renderhjs.net/fbxbundle/#settings_bundle"
-
-
-		row = col.row(align=True)
-		row.prop(context.scene.FBXBundleSettings, "mode_pivot", text="Pivot at", icon='OUTLINER_DATA_EMPTY', expand=False)
-		row.operator("wm.url_open", text="", icon='QUESTION').url = "http://renderhjs.net/fbxbundle/#settings_pivot"
 
 
 		col = box.column(align=True)
@@ -281,7 +262,6 @@ class Panel_Tools(bpy.types.Panel):
 
 		col = col.column(align=True)
 
-		col.operator(op_pivot_ground.op.bl_idname, text="Pivot at Ground", icon='OUTLINER_DATA_EMPTY')
 		col.operator(op_tool_geometry_fix.op.bl_idname, text="Fix imp. Geometry", icon='MESH_ICOSPHERE')
 		
 		if bpy.app.debug_value != 0:

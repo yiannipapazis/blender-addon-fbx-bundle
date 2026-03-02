@@ -5,7 +5,6 @@ from mathutils import Vector
 import math
 import random
 import re
-import operator
 import json
 import imp
 
@@ -197,139 +196,37 @@ def get_bundles(fast=False):
 
 
 
-def get_bounds_combined(objects):
-	bounds = ObjectBounds(objects[0])
-	if len(objects) > 1:
-		for i in range(1,len(objects)):
-			bounds.combine( ObjectBounds(objects[i]) )
-	return bounds
-
-
-
 def get_pivot(objects):
-	mode_pivot = bpy.context.scene.FBXBundleSettings.mode_pivot
+	mode_bundle = bpy.context.scene.FBXBundleSettings.mode_bundle
 
-	if len(objects):
-		if mode_pivot == 'OBJECT_FIRST':
-			if len(objects) > 0:
-				return objects[0].location
+	if not objects:
+		return Vector((0, 0, 0))
 
-		elif mode_pivot == 'BOUNDS_BOTTOM':
-			bounds = get_bounds_combined(objects)
-			return Vector((
-				bounds.min.x + bounds.size.x/2,
-				bounds.min.y + bounds.size.y/2,
-				bounds.min.z
-			))
-		elif mode_pivot == 'OBJECT_LOWEST':
+	obj = objects[0]
+	root = obj
+	if mode_bundle == 'PARENT' or mode_bundle == 'COLLECTION_INSTANCE':
+		# climb up to the root parent
+		for i in range(100): # safety break
+			if root.parent:
+				root = root.parent
+			else:
+				break
+	
+	if mode_bundle == 'PARENT':
+		return root.location
 
-			obj_bounds = {}
-			for obj in objects:
-				b = ObjectBounds(obj)
-				obj_bounds[obj] = b.min.z
+	if mode_bundle == 'COLLECTION_INSTANCE':
+		if root.instance_collection:
+			return root.location
 
-			# Sort
-			ordered = sorted(obj_bounds.items(), key=operator.itemgetter(1))
-			return ordered[0][0].location
-
-
-		elif mode_pivot == 'SCENE':
-			return Vector((0,0,0))
-		
-		elif mode_pivot == 'PARENT':
-			if len(objects) > 0:
-				if objects[0].parent:
-					return objects[0].parent.location
-				else:
-					return objects[0].location
-
-		elif mode_pivot == 'EMPTY':
-			# Empty Gizmo, not part of bundle selection but rather scene selection
-			for obj in bpy.context.selected_objects:
-				if obj.type == 'EMPTY':
-					if obj.empty_display_type == 'SINGLE_ARROW' or obj.empty_display_type == 'PLAIN_AXES' or obj.empty_display_type == 'ARROWS':
-						return obj.location
-
-	# Default
 	return Vector((0,0,0))
-
-
-
-split_chars = ['',' ','_','.','-']
-
-
-def encode(name):
-	name = name.replace("<","")
-	name = name.replace(">","")
-
-	# Split Camel Case
-	split = re.sub('(?!^)([A-Z][a-z]+)', r' \1', name).split()
-	name = '<0>'.join(split)
-
-	# Split
-	for i in range(len(split_chars)):
-		char = split_chars[i]
-		if len(char) > 0:
-			name = name.replace(char,'<{}>'.format(i))
-	
-
-	split = name.split("<")
-	fill = []
-	elem = []
-	for i in range(len(split)):
-		element = split[i]
-
-		if i == 0 :
-			elem.append( split[i] )
-
-		elif i > 0:
-			char = split_chars[int(element[0:1])] 
-			e = split[i][2:]
-			# Don't add empty elements (e.g. double split sequences)
-			if e != "":
-				elem.append( e )
-				fill.append( char )
-
-
-	
-	return " ".join(elem), fill
-
-
-def decode(name, fill):
-
-	n = ""
-	split = name.split(" ")
-	for i in range(len(split)):
-		n+=split[i]
-		if i < len(split)-1:
-			n+=fill[i]
-
-	return n
 
 
 
 def get_key(obj):
 	mode_bundle = bpy.context.scene.FBXBundleSettings.mode_bundle
 
-	if mode_bundle == 'NAME':
-
-		name = obj.name
-		# Remove blender naming digits, e.g. cube.001, cube.002,...
-		if len(name)>= 4 and name[-4] == '.' and name[-3].isdigit() and name[-2].isdigit() and name[-1].isdigit():
-			name = name[:-4]
-
-		name, fill = encode(name)
-
-		# Combine
-		split = name.split(' ')
-		if len(split) > 1:
-			name = ' '.join(split[0:-1])
-		else:
-			name = split[0]
-
-		return decode(name, fill)
-
-	elif mode_bundle == 'PARENT':
+	if mode_bundle == 'PARENT':
 		# Use group name
 		if obj.parent:
 			limit = 100
@@ -369,45 +266,9 @@ def get_key(obj):
 				return obj.instance_collection.name
 		
 
-	elif mode_bundle == 'MATERIAL':
-		# Use material name
-		if len(obj.material_slots) >= 1:
-			return obj.material_slots[0].name
-
 	elif mode_bundle == 'SCENE':
 		# Use scene name
 		return bpy.context.scene.name
-
-	elif mode_bundle == 'SPACE':
-
-		# Do objects share same space with bounds?
-		objects = get_objects()
-		clusters = []
-
-		for o in objects: 
-			clusters.append({'bounds':ObjectBounds(o), 'objects':[o], 'merged':False})
-
-
-		for clusterA in clusters:
-			if len(clusterA['objects']) > 0:
-
-				for clusterB in clusters:
-					if clusterA != clusterB and len(clusterB['objects']) > 0:
-
-						boundsA = clusterA['bounds']
-						boundsB = clusterB['bounds']
-						if boundsA.is_colliding(boundsB):
-							
-							# print("Merge {} --> {}x = {}".format(nA, len(clusterB['objects']), ",".join( [o.name for o in clusterB['objects'] ] )   ))
-							for o in clusterB['objects']:
-								clusterA['objects'].append( o )
-							clusterB['objects'].clear()
-							
-							boundsA.combine(boundsB)
-
-		for cluster in clusters:
-			if obj in cluster['objects']:
-				return cluster['objects'][0].name
 
 	return "UNDEFINED"
 

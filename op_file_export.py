@@ -80,9 +80,6 @@ def export(self, target_platform):
     previous_pivot = bpy.context.tool_settings.transform_pivot_point
     previous_cursor = bpy.context.scene.cursor.location.copy()
 
-    # Get mode
-    mode_pivot = bpy.context.scene.FBXBundleSettings.mode_pivot
-
     if not bpy.context.view_layer.objects.active:
         bpy.context.view_layer.objects.active = bpy.context.selected_objects[0]
 
@@ -95,7 +92,7 @@ def export(self, target_platform):
     objects_organise.recent_store(bundles)
 
     for name, objects in bundles.items():
-        export_bundle(self, name, objects, folder, mode, mode_pivot)
+        export_bundle(self, name, objects, folder, mode)
 
     # Restore previous settings
     bpy.context.scene.unit_settings.system = previous_unit_system
@@ -121,7 +118,7 @@ def export(self, target_platform):
     bpy.context.window_manager.popup_menu(draw, title="Exported {}x files".format(len(bundles)), icon='INFO')
 
 
-def export_bundle(self, name, objects, folder, mode, mode_pivot):
+def export_bundle(self, name, objects, folder, mode):
     # Store original locations
     original_locations = {obj: obj.location.copy() for obj in objects}
 
