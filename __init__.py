@@ -1,38 +1,28 @@
 
 if "bpy" in locals():
 	import imp
-	imp.reload(gp_draw)
 	imp.reload(objects_organise)
 
-	imp.reload(op_fence_clear)
-	imp.reload(op_fence_draw)
 	imp.reload(op_file_copy_unity_script)
 	imp.reload(op_file_export)
 	imp.reload(op_file_export_recent)
 	imp.reload(op_file_export_recent_clear)
 	imp.reload(op_file_import)
 	imp.reload(op_file_open_folder)
-	imp.reload(op_tool_geometry_fix)
-	imp.reload(op_tool_pack_bundles)
 	
 	imp.reload(modifiers) 
 	imp.reload(platforms)
 
 
 else:
-	from . import gp_draw
 	from . import objects_organise
 
-	from . import op_fence_clear
-	from . import op_fence_draw
 	from . import op_file_copy_unity_script
 	from . import op_file_export
 	from . import op_file_export_recent
 	from . import op_file_export_recent_clear
 	from . import op_file_import
 	from . import op_file_open_folder
-	from . import op_tool_geometry_fix
-	from . import op_tool_pack_bundles
 
 	from . import modifiers
 	from . import platforms
@@ -108,22 +98,10 @@ class FBXBundleSettings(bpy.types.PropertyGroup):
 		description="Define the path where to export or import from",
 		subtype='DIR_PATH'
 	)
-	padding: bpy.props.FloatProperty (
-		name="Padding",
-		default=0.15,
-		min = 0,
-		description="Padding for fences or space bundling",
-		subtype='DISTANCE'
-	)
 	collapseBundles: bpy.props.BoolProperty (
 		name="Collapse",
 		default=True,
 		description="Compact list view"
-	)
-	include_children: bpy.props.BoolProperty (
-		name="Incl. Children",
-		default=True,
-		description="Include nested children in bundles, e.g parent or group."
 	)
 	recent: bpy.props.StringProperty (
 		name="Recent export",
@@ -176,13 +154,6 @@ class Panel_Core(bpy.types.Panel):
 
 		mode = bpy.context.scene.FBXBundleSettings.target_platform
 
-		if bpy.app.debug_value != 0:
-			row = box.row(align=True)
-			row.alert = True
-			row.operator(op_debug_setup.bl_idname, text="Setup", icon='COLOR')
-			row.operator(op_debug_lines.bl_idname, text="Draw", icon='GREASEPENCIL')
-
-
 		col = box.column(align=True)
 
 		row = col.row(align=True)
@@ -194,14 +165,12 @@ class Panel_Core(bpy.types.Panel):
 			row.operator(op_file_open_folder.op.bl_idname, text="", icon='FILE_FOLDER')
 
 		row = col.row(align=True)
-		row.prop(context.scene.FBXBundleSettings, "mode_bundle", text="Bundle by", icon='GROUP')
+		row.prop(context.scene.FBXBundleSettings, "mode_bundle", text="Bundle", icon='GROUP')
 		row.operator("wm.url_open", text="", icon='QUESTION').url = "http://renderhjs.net/fbxbundle/#settings_bundle"
 
 
 		col = box.column(align=True)
 		row = col.row(align=True)
-		row.prop(context.scene.FBXBundleSettings, "padding", text="Padding", expand=True)
-		row.prop(context.scene.FBXBundleSettings, "include_children", text="Include children", expand=True)
 
 		# Warnings
 
@@ -231,51 +200,6 @@ class Panel_Core(bpy.types.Panel):
 
 		
 		
-
-
-class Panel_Tools(bpy.types.Panel):
-	bl_idname = "FBX_bundle_panel_tools"
-	bl_label = "Tools"
-	bl_space_type = 'VIEW_3D'
-	bl_region_type = 'UI'
-	bl_category = "FBX Bundle"
-	bl_context = "objectmode"
-	bl_options = {'DEFAULT_CLOSED'}
-
-	def draw(self, context):
-		layout = self.layout
-		col = layout.column()
-
-		
-
-
-		
-		# Get bundles
-		bundles = objects_organise.get_bundles()
-
-		row = col.row(align=True)
-		row.scale_y = 1.85
-		row.operator(op_fence_draw.op.bl_idname, text="Draw Fences", icon='SELECT_SET')
-		row.operator(op_fence_clear.op.bl_idname, text="", icon='PANEL_CLOSE')
-
-		col.separator()
-
-		col = col.column(align=True)
-
-		col.operator(op_tool_geometry_fix.op.bl_idname, text="Fix imp. Geometry", icon='MESH_ICOSPHERE')
-		
-		if bpy.app.debug_value != 0:
-			col.operator(op_tool_pack_bundles.op.bl_idname, text="Pack & Arrange", icon='UGLYPACKAGE')
-		
-
-
-			row = layout.row(align=True)
-			row.alert =True
-			row.operator(op_fence_clear.op.bl_idname, text="Pack", icon='IMGDISPLAY')
-			row.operator(op_fence_clear.op.bl_idname, text="Align Z", icon='TRIA_DOWN_BAR')
-			layout.separator()
-
-
 
 
 
@@ -418,40 +342,6 @@ class Panel_Files(bpy.types.Panel):
 
 
 
-class op_debug_lines(bpy.types.Operator):
-	bl_idname = "fbxbundle.debug_lines"
-	bl_label = "Debug"
-
-	def execute(self, context):
-		print ("Debug Operator")
-
-		gp_draw.draw_debug()
-
-		return {'FINISHED'}
-
-
-class op_debug_setup(bpy.types.Operator):
-	bl_idname = "fbxbundle.debug_setup"
-	bl_label = "Setup"
-
-	def execute(self, context):
-		print ("Debug Setup Operator")
-
-		# Disable grid
-		bpy.context.space_data.show_axis_x = False
-		bpy.context.space_data.show_axis_y = False
-		bpy.context.space_data.show_axis_z = False
-		bpy.context.space_data.grid_lines = 6
-		bpy.context.space_data.grid_subdivisions = 1
-		bpy.context.space_data.grid_scale = 1
-		bpy.context.space_data.show_floor = False
-
-		bpy.context.space_data.show_all_objects_origin = True
-
-
-		return {'FINISHED'}
-
-
 class op_select(bpy.types.Operator):
 	bl_idname = "fbxbundle.select"
 	bl_label = "Select"
@@ -504,7 +394,8 @@ auto_load.init()
 
 addon_keymaps = []
 
-classes = (Panel_Preferences, FBXBundleSettings, Panel_Core, Panel_Tools, Panel_Modifiers, Panel_Files, op_debug_lines, op_debug_setup, op_select, op_remove)
+classes = (Panel_Preferences, FBXBundleSettings, Panel_Core, #Panel_Modifiers, 
+Panel_Files, op_select, op_remove)
 
 def register():
 	# bpy.utils.register_module(__name__)

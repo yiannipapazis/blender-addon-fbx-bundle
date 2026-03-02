@@ -26,7 +26,7 @@ def get_objects(fast=True):
 		objects.append(obj)
 
 	# Include all children?
-	if len(objects) > 0 and bpy.context.scene.FBXBundleSettings.include_children:
+	if len(objects) > 0:
 		
 		limit = 100  # max depth
 
@@ -248,7 +248,7 @@ def get_key(obj):
 	
 	elif mode_bundle == 'COLLECTION_INSTANCE':
 		# Use collection instance name
-		if bpy.context.scene.FBXBundleSettings.include_children:
+		if True:
 			if obj.parent:
 				limit = 100
 				obj_parent = obj.parent
