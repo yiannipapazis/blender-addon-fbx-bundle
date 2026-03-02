@@ -1,83 +1,35 @@
+# FBX Bundle Exporter
 
+A simplified and modern take on the original FBX Bundle addon, designed for streamlined batch exporting from Blender.
 
-![](https://farm2.staticflickr.com/1775/43061827304_ef4d3f99be_o.png)
+## Features
 
-# FBX Bundle Addon #
+*   **Simplified Batch Exporting**: Export multiple bundles of objects to FBX, DAE, glTF and OBJ.
+*   **Flexible Bundling**: Group objects for export based on:
+    *   Parent
+    *   Collection
+    *   Collection Instance
+    *   Scene
+*   **Automatic Pivot Placement**: The pivot point of each bundle is automatically determined by the bundling method.
+*   **Multi-platform Support**: Export with presets for popular platforms like Unity and Unreal Engine.
+*   **Streamlined UI**: A clean and simple interface to get your assets out of Blender quickly.
 
-The **FBX Bundle** Addon is a **Blender 2.8** addon that simplifies the process of batch exporting FBX files. It's easy to use: specify a folder, select your objects, press 'Export'. FBX files for Unity will have correct rotations and scale values assigned as well as automatically existing materials assigned if their names match with Blender's materials per object.
+## Installation
 
-This is an unofficial port to blender 2.8
+1.  Download the `FBXBundleExporter.zip` file from the latest release.
+2.  In Blender, go to `Edit > Preferences > Add-ons`.
+3.  Click `Install...` and select the downloaded `.zip` file.
+4.  Enable the "FBX Bundle" addon.
 
-## Documentation & Releases ##
-You can find documentation and the previous releases on the official website
+## How to Use
 
-* [renderhjs.net/fbxbundle](http://renderhjs.net/fbxbundle)
-
-
-# Release Log #
-
-## FBX Bundle 1.5.1 ##
-
-**WARNING**
-
-* Experimental port to blender 2.8.
-* Please backup your work before using this tool!
-
-**Download**
-
-* [FBX_Bundle_1.5.1.zip](https://github.com/TiliSleepStealer/blender-addon-fbx-bundle/releases/download/release_1.5.1/FBX_Bundle_1.5.1.zip)
-
-## FBX Bundle 1.5.0 ##
-
-**Download**
-
-* [FBX_Bundle_1.5.0.zip](http://renderhjs.net/fbxbundle/download/FBX_Bundle_1.5.0.zip)
-
-**Changes**
-
-* New modifiers: Rename, Offset transform, copy modifiers, merge meshes, collider meshe, LOD, vertex AO
-* New platform system: Unity, Unreal, Collada, glTF
-* glTF support (requires official glTF addon)
-* New pivot mode: Empty plain axis object
-* Include children: Auto select grouped objects e.g. in scene mode, group mode, parent mode
-* Re-Export button: Re-Exports previous objects again
-
-## FBX Bundle 1.2.0 ##
-
-**Download**
-
-* [FBX_Bundle_1.2.0.zip](http://renderhjs.net/fbxbundle/download/FBX_Bundle_1.2.0.zip)
-
-**Changes**
-
-* New pivot mode: parent pivot
-* improved Unreal & Unity export & smoothing groups
-* fixed scale for Unreal export
-* install / uninstall errors fixed
-* New mesh fix tool: clean up smoothing, uv & topology issues on selected objects
-
-## FBX Bundle 1.1.0 ##
-
-**Download**
-
-* [FBX_Bundle_1.1.0.zip](http://renderhjs.net/fbxbundle/download/FBX_Bundle_1.1.0.zip)
-
-**Changes**
-
-* Rotate meshes x -90 to counter rotation issues in Unity
-* New pivot mode: lowest object
-* Warning if scene units are not metric
-* New merge mode added
-* New Unity Editor script to process fbx 
-
-## FBX Bundle 1.0.0 ##
-
-**Download**
-
-* [FBX_Bundle_1.0.0.zip](http://renderhjs.net/fbxbundle/download/FBX_Bundle_1.0.0.zip)
-
-**Changes**
-
-* initial release
-* export & import from a set folder
-* draw fences tool
+1.  Select the objects you want to export in the 3D View.
+2.  Press the `N` key to open the Sidebar and look for the "FBX Bundle" tab.
+3.  **Set Output Path**: Choose the folder where you want to save your files.
+4.  **Select Target Platform**: Pick the platform you are exporting for (e.g., Unity, Unreal).
+5.  **Choose "Bundle by" method**:
+    *   **Parent**: Creates a bundle for each top-level parent of the selected objects. The parent's origin becomes the pivot point.
+    *   **Collection**: Creates a bundle for each collection the selected objects belong to. The pivot will be at the world origin (0,0,0).
+    *   **Collection Instance**: Creates a bundle for each collection instance. The pivot will be at the collection instance's origin.
+    *   **Scene**: Exports all selected objects into a single file, pivoted at the world origin (0,0,0).
+6.  Click the **Export** button. Your bundled files will appear in the specified output path.
