@@ -16,6 +16,14 @@ def is_object_valid(obj):
 	# Objects to include in a bundle as 'export-able'
 	if obj.hide_viewport:
 		return False
+
+	# Ignore objects that are not in any collection (e.g. MESHMachine stashed objects)
+	if len(obj.users_collection) == 0:
+		return False
+
+	# Ensure the object is in the current view layer to avoid selection errors
+	if obj.name not in bpy.context.view_layer.objects:
+		return False
 		
 	return obj.type == 'MESH' or obj.type == 'FONT' or obj.type == 'CURVE' or obj.type == 'EMPTY' or obj.type == 'ARMATURE'
 
