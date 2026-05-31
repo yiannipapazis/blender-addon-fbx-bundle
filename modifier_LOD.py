@@ -36,6 +36,7 @@ class Modifier(modifier.Modifier):
 	label = "LOD"
 	id = 'lod'
 	url = "http://renderhjs.net/fbxbundle/#modifier_lod"
+	settings_class = Settings
 
 	def __init__(self):
 		super().__init__()

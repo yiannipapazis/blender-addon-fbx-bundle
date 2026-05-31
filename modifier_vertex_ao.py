@@ -26,6 +26,7 @@ class Modifier(modifier.Modifier):
 	label = "Vertex AO"
 	id = 'vertex_ao'
 	url = "http://renderhjs.net/fbxbundle/#modifier_ao"
+	settings_class = Settings
 
 	def __init__(self):
 		super().__init__()

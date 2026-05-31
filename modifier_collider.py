@@ -34,6 +34,7 @@ class Modifier(modifier.Modifier):
 	label = "Collider Mesh"
 	id = 'collider'
 	url = "http://renderhjs.net/fbxbundle/#modifier_collider"
+	settings_class = Settings
 
 	def __init__(self):
 		super().__init__()

@@ -44,6 +44,7 @@ class Modifier(modifier.Modifier):
 	label = "Merge Meshes"
 	id = 'merge'
 	url = "http://renderhjs.net/fbxbundle/#modifier_merge"
+	settings_class = Settings
 	
 	def __init__(self):
 		super().__init__()

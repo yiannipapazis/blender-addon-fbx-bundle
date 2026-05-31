@@ -32,6 +32,7 @@ class Modifier(modifier.Modifier):
 	label = "Rename"
 	id = 'rename'
 	url = "http://renderhjs.net/fbxbundle/#modifier_rename"
+	settings_class = Settings
 
 
 	def __init__(self):

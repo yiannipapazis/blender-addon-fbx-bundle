@@ -27,6 +27,7 @@ class Modifier(modifier.Modifier):
 	label = "Lightmap UV"
 	id = 'lightmap_uv'
 	url = ""
+	settings_class = Settings
 	
 	def __init__(self):
 		super().__init__()

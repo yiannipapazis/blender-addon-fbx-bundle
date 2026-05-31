@@ -24,6 +24,7 @@ class Modifier:
 	label = "Modifier"
 	id = 'modifier'
 	url = ""
+	settings_class = Settings
 
 	def __init__(self):
 		pass
@@ -35,21 +36,13 @@ class Modifier:
 
 
 	def register(self):
-		import sys
-		module = sys.modules[self.__class__.__module__]
-		settings_class = getattr(module, "Settings")
-
 		print("Register base class Settings for: {}".format(self.__class__.__name__))
-		bpy.utils.register_class(settings_class)
-		setattr(bpy.types.Scene, self.settings_path(), bpy.props.PointerProperty(type=settings_class))
+		bpy.utils.register_class(self.settings_class)
+		setattr(bpy.types.Scene, self.settings_path(), bpy.props.PointerProperty(type=self.settings_class))
 
 
 	def unregister(self):
-		import sys
-		module = sys.modules[self.__class__.__module__]
-		settings_class = getattr(module, "Settings")
-
-		bpy.utils.unregister_class(settings_class)
+		bpy.utils.unregister_class(self.settings_class)
 		delattr(bpy.types.Scene, self.settings_path())
 
 

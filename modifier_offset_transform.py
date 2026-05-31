@@ -20,6 +20,7 @@ class Modifier(modifier.Modifier):
 	label = "Offset Transform"
 	id = 'offset_transform'
 	url = "http://renderhjs.net/fbxbundle/#modifier_offset"
+	settings_class = Settings
 
 	def __init__(self):
 		super().__init__()
