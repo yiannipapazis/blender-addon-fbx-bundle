@@ -1,5 +1,5 @@
 import bpy, bmesh
-import imp
+import importlib as imp
 import string
 import random
 from mathutils import Vector

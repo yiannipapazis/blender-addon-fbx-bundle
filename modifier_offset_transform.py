@@ -1,5 +1,5 @@
 import bpy, bmesh
-import imp
+import importlib as imp
 import math
 from mathutils import Vector
 

@@ -4,7 +4,7 @@ import sys
 import typing
 import inspect
 import pkgutil
-import importlib
+import importlib as imp
 from pathlib import Path
 
 __all__ = (
@@ -55,7 +55,7 @@ def get_all_submodules(directory):
 
 def iter_submodules(path, package_name):
     for name in sorted(iter_submodule_names(path)):
-        yield importlib.import_module("." + name, package_name)
+        yield imp.import_module("." + name, package_name)
 
 def iter_submodule_names(path, root=""):
     for _, module_name, is_package in pkgutil.iter_modules([str(path)]):

@@ -6,7 +6,7 @@ import math
 import random
 import re
 import json
-import imp
+import importlib as imp
 
 from . import platforms
 imp.reload(platforms)

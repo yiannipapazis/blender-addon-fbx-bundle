@@ -1,6 +1,6 @@
 import bpy, bmesh
 import math
-import imp
+import importlib as imp
 import os
 from . import objects_organise
 

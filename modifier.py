@@ -4,7 +4,7 @@ import operator
 import mathutils
 from mathutils import Vector
 
-import imp
+import importlib as imp
 
 from . import op_modifier_apply
 imp.reload(op_modifier_apply)
@@ -35,22 +35,22 @@ class Modifier:
 
 
 	def register(self):
-		n = self.__module__.split(".")[-1]
-		print("Register base class: n:{}.Settings ".format(n))
+		import sys
+		module = sys.modules[self.__class__.__module__]
+		settings_class = getattr(module, "Settings")
 
-		exec("from . import {}".format(n))
-		exec("bpy.utils.register_class({}.Settings)".format(n))
-		exec("bpy.types.Scene."+self.settings_path() + "= bpy.props.PointerProperty(type={}.Settings)".format(n))
+		print("Register base class Settings for: {}".format(self.__class__.__name__))
+		bpy.utils.register_class(settings_class)
+		setattr(bpy.types.Scene, self.settings_path(), bpy.props.PointerProperty(type=settings_class))
 
 
 	def unregister(self):
-		n = self.__module__.split(".")[-1]
-		# try:
-		exec("from . import {}".format(n))
-		exec("bpy.utils.unregister_class({}.Settings)".format(n))
-		# except:
-		# 	print("sad")
-		exec("del "+"bpy.types.Scene."+self.settings_path() )
+		import sys
+		module = sys.modules[self.__class__.__module__]
+		settings_class = getattr(module, "Settings")
+
+		bpy.utils.unregister_class(settings_class)
+		delattr(bpy.types.Scene, self.settings_path())
 
 
 	def get(self, key):

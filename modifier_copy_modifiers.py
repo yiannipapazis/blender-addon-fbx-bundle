@@ -1,5 +1,5 @@
 import bpy, bmesh
-import imp
+import importlib as imp
 
 from . import modifier
 imp.reload(modifier) 

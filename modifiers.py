@@ -15,7 +15,7 @@ from . import modifier_lightmap
 
 # from . import modifier_rename
 
-import imp
+import importlib as imp
 imp.reload(modifier_rename) 
 imp.reload(modifier_merge)
 imp.reload(modifier_copy_modifiers) 

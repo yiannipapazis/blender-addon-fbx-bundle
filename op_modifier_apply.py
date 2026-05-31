@@ -1,7 +1,7 @@
 import bpy, bmesh
 import os
 import mathutils
-import imp
+import importlib as imp
 
 from . import objects_organise
 imp.reload(objects_organise)

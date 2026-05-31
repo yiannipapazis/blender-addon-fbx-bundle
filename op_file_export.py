@@ -2,7 +2,7 @@ import bpy, bmesh
 import os
 import mathutils
 import math
-import imp
+import importlib as imp
 import pathlib
 
 from . import objects_organise

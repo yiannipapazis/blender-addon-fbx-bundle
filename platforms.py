@@ -14,7 +14,7 @@ from . import platform_obj
 from . import platform_houdini
 
 
-import imp
+import importlib as imp
 imp.reload(platform_unity)
 imp.reload(platform_gltf)
 imp.reload(platform_unreal)

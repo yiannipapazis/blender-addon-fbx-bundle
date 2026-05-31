@@ -1,6 +1,6 @@
 
 if "bpy" in locals():
-	import imp
+	import importlib as imp
 	imp.reload(objects_organise)
 
 	imp.reload(op_file_copy_unity_script)
